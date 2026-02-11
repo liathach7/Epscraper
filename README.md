@@ -1,13 +1,11 @@
 # Epscraper
 
 
-Automated trawling through the government Epstein files. Uses python and selenium. Feed it a url and it will open it in the browser, then increment it
+I have been clicking through the €p$tein files to look for pdfs with base64 text which can be decoded. Such pdfs have large number of pages so I am looking out for that.
 
-I got fed up of clicking. This makes it easier to search through files as you can simply watch and look out any pdfs of interest.
+I developed this to automate that so I can look at the results of a search in a master image later. This may help you as well!
 
-![image](images/screenshot.png)
-
-##### Step 1
+#### Step 1
 make sure you have python installed.
 
 navigate to directory Epscraper in terminal
@@ -21,17 +19,41 @@ install dependencies:
 
 pip install -r requirements.txt
 
-##### Step 2
+#### Step 2
 find a valid url. Take it from jmail.world e.g. https://www.justice.gov/epstein/files/DataSet%2010/EFTA01826982.pdf
 
-go into scrape.py to line 18 and change the url
+go into screen.py to line 24 and change the url
 
-##### step 3
+#### step 3
 start the program:
 
-run scrape.py
+run screen.py
+
+this starts the automation.
+![image]('images/screenshot.png')
+
+You can kick back and wait as it trawls through files by incrementing the url. I've set it to load a max of 500 pages and to stop incrementing after loading 10 pages without a pdf, and going to back to original url and decrementing until 10 page not founds. You can change these settings if you want longer
+
+#### step 4 - read the results
+go into images and click on the file named after the url you input plus filled
+![image]('images/screenshot2.png')
+
+Look for a number that's higher than the others
+![image]('images/screenshot3.png')
+here is a 6 that could be promising. count its position. there are 20 images in each row, so count down by 20, this one is position 182
 
 
-close the browser at any time to stop. You change the time spent on each pdf by editing scrape.py
+open the txt file with the same url and find the url matched to that number
+![image]('images/screenshot4.png')
 
-I hope you find it useful and let me know about any issues. happy trawling
+search the url to check if there are any base64 dumps
+![image]('images/screenshot5.png')
+
+in this case there aren't any, but the next one may be!
+
+happy trawling!
+
+
+
+
+

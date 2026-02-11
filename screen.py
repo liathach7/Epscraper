@@ -21,8 +21,9 @@ chrome_options.add_argument('disable-notifications')
 chrome_options.add_argument("window-size=1280,720")
 
 driver = webdriver.Chrome()
-url='https://www.justice.gov/epstein/files/DataSet%2011/EFTA02584421.pdf'
+url='https://www.justice.gov/epstein/files/DataSet%2011/EFTA02574692.pdf'
 
+# calculates where to place cropped image on master image
 def placer(pdfs):
     x = 5 + (pdfs * 35)
     y = 5
@@ -32,6 +33,7 @@ def placer(pdfs):
         x = 5 + (pdfs * 35) - (row * 700)
     return (x,y)
 
+#main function
 def scrape(url):
     #time.sleep(3)
     counter = ''
@@ -55,42 +57,40 @@ def scrape(url):
             
             WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.XPATH, "//*[contains(@class, 'usa-button')]"))).click()
         except:
-            #print('didnt find robot button')
             pass
 
         # gets past age button
         try:
             WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.XPATH, "//*[@id='age-button-yes']"))).click()
         except:
-           # print('didnt find age button')
             pass
         
         # checks page not found is being displayed
         try:
-            WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.XPATH, "//body[@class = 'below-desktop']")))
-            #print('page not found')
+            WebDriverWait(driver, 0.5).until(EC.presence_of_element_located((By.XPATH, "//body[@class = 'below-desktop']")))
             counter+='0'
         except:
 
-            #checks if anything else is loaded
+            #checks if anything else is loaded i.e. pdf
             
             WebDriverWait(driver, 12).until(EC.presence_of_element_located((By.XPATH, "//head")))
 
-            # include this if you want more time on the pdfs
-            #time.sleep(5)
             counter+='1'
-            
             print('found pdf')
+
+            # checks that current page is a pdf then takes a screenshot, crops the number of pages, adds it to master image
+            # and logs the url
             if counter[-1] == '1':
                 file_name = url[-12:-4] + '.png'
                 driver.save_screenshot(file_name)
                 
                 with Image.open(file_name) as im:
+
+                    #might need to change 530 and 560 to 755 and 785, it depends on how window opens. the 20 and 70 should be ok
                     im = im.crop((530,20,560,70))
+                    
                     im.save('crop.png')
                 os.remove(file_name)
-                #crop_name = url[-12:-4] + 'crop' + '.png'
-                #im.save(crop_name)
                 
                 if pdfs == 0:
                     pdfs+=1

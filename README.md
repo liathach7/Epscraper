@@ -30,24 +30,24 @@ start the program:
 run screen.py
 
 this starts the automation.
-![image]('images/screenshot.png')
+![image](images/screenshot.png)
 
 You can kick back and wait as it trawls through files by incrementing the url. I've set it to load a max of 500 pages and to stop incrementing after loading 10 pages without a pdf, and going to back to original url and decrementing until 10 page not founds. You can change these settings if you want longer
 
 #### step 4 - read the results
 go into images and click on the file named after the url you input plus filled
-![image]('images/screenshot2.png')
+![image](images/screenshot2.png)
 
 Look for a number that's higher than the others
-![image]('images/screenshot3.png')
+![image](images/screenshot3.png)
 here is a 6 that could be promising. count its position. there are 20 images in each row, so count down by 20, this one is position 182
 
 
 open the txt file with the same url and find the url matched to that number
-![image]('images/screenshot4.png')
+![image](images/screenshot4.png)
 
 search the url to check if there are any base64 dumps
-![image]('images/screenshot5.png')
+![image](images/screenshot5.png)
 
 in this case there aren't any, but the next one may be!
 

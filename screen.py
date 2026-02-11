@@ -21,7 +21,7 @@ chrome_options.add_argument('disable-notifications')
 chrome_options.add_argument("window-size=1280,720")
 
 driver = webdriver.Chrome()
-url='https://www.justice.gov/epstein/files/DataSet%2011/EFTA02583925.pdf'
+url='https://www.justice.gov/epstein/files/DataSet%2011/EFTA02584421.pdf'
 
 def placer(pdfs):
     x = 5 + (pdfs * 35)
@@ -95,11 +95,11 @@ def scrape(url):
                 if pdfs == 0:
                     pdfs+=1
                     with Image.new('RGB',(763,2000),(255,255,255)) as filled:
-                        my_name = orig_url[-19:-17] + '-' + orig_url[-12:-4] + 'filled.png'
+                        my_name = 'results/' + orig_url[-19:-17] + '-' + orig_url[-12:-4] + 'filled.png'
                         crop = Image.open('crop.png')
                         filled.paste(crop,(5,5))
                         filled.save(my_name)
-                    txt_name = orig_url[-19:-17] + '-' + orig_url[-12:-4]+'.txt'
+                    txt_name = 'results/' + orig_url[-19:-17] + '-' + orig_url[-12:-4]+'.txt'
                     with open(txt_name,'w') as f:
                         f.write(str(pdfs) + ' - '+ url[-12:-4])
                     
@@ -108,11 +108,11 @@ def scrape(url):
                     coords = placer(pdfs)
                     print('coords: ',coords)
                     with Image.open(my_name) as filled:
-                        my_name = orig_url[-19:-17] + '-' + orig_url[-12:-4] + 'filled.png'
+                        my_name = 'results/' + orig_url[-19:-17] + '-' + orig_url[-12:-4] + 'filled.png'
                         crop = Image.open('crop.png')
                         filled.paste(crop, coords)
                         filled.save(my_name)
-                    txt_name = orig_url[-19:-17] + '-' + orig_url[-12:-4]+'.txt'
+                    txt_name = 'results/' + orig_url[-19:-17] + '-' + orig_url[-12:-4]+'.txt'
                     with open(txt_name,'a') as f:
                         f.write('\n' + str(pdfs+1) + ' - ' + url[-12:-4])
                     pdfs+=1

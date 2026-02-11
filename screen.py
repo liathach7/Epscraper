@@ -8,6 +8,12 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 import time
+from PIL import Image
+import os
+import math
+
+
+
 
 chrome_options = Options()
 chrome_options.add_argument("--no-sandbox")
@@ -15,8 +21,16 @@ chrome_options.add_argument('disable-notifications')
 chrome_options.add_argument("window-size=1280,720")
 
 driver = webdriver.Chrome()
-url='https://www.justice.gov/epstein/files/DataSet%2011/EFTA02393469.pdf'
+url='https://www.justice.gov/epstein/files/DataSet%2011/EFTA02583925.pdf'
 
+def placer(pdfs):
+    x = 5 + (pdfs * 35)
+    y = 5
+    if x > 700:
+        row = math.floor(x/700)
+        y = 5 + (row * 55)
+        x = 5 + (pdfs * 35) - (row * 700)
+    return (x,y)
 
 def scrape(url):
     #time.sleep(3)
@@ -25,6 +39,7 @@ def scrape(url):
     for l in url:
         orig_url += l
     adding = '+'
+    pdfs = 0
 
     # max number of page loads before stopping. can be changed from 500
     for i in range(500):
@@ -52,23 +67,63 @@ def scrape(url):
         
         # checks page not found is being displayed
         try:
-            WebDriverWait(driver, 0.5).until(EC.presence_of_element_located((By.XPATH, "//body[@class = 'below-desktop']")))
+            WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.XPATH, "//body[@class = 'below-desktop']")))
             #print('page not found')
             counter+='0'
         except:
 
             #checks if anything else is loaded
-            try:
-                WebDriverWait(driver, 12).until(EC.presence_of_element_located((By.XPATH, "//head")))
+            
+            WebDriverWait(driver, 12).until(EC.presence_of_element_located((By.XPATH, "//head")))
 
-                # include this if you want more time on the pdfs
-                #time.sleep(5)
-                print('found pdf')
-                counter+='1'
+            # include this if you want more time on the pdfs
+            #time.sleep(5)
+            counter+='1'
+            
+            print('found pdf')
+            if counter[-1] == '1':
+                file_name = url[-12:-4] + '.png'
+                driver.save_screenshot(file_name)
                 
-            except:
-                print('didnt work')
-                pass
+                with Image.open(file_name) as im:
+                    im = im.crop((530,20,560,70))
+                    im.save('crop.png')
+                os.remove(file_name)
+                #crop_name = url[-12:-4] + 'crop' + '.png'
+                #im.save(crop_name)
+                
+                if pdfs == 0:
+                    pdfs+=1
+                    with Image.new('RGB',(763,2000),(255,255,255)) as filled:
+                        my_name = orig_url[-19:-17] + '-' + orig_url[-12:-4] + 'filled.png'
+                        crop = Image.open('crop.png')
+                        filled.paste(crop,(5,5))
+                        filled.save(my_name)
+                    txt_name = orig_url[-19:-17] + '-' + orig_url[-12:-4]+'.txt'
+                    with open(txt_name,'w') as f:
+                        f.write(str(pdfs) + ' - '+ url[-12:-4])
+                    
+                    
+                else:
+                    coords = placer(pdfs)
+                    print('coords: ',coords)
+                    with Image.open(my_name) as filled:
+                        my_name = orig_url[-19:-17] + '-' + orig_url[-12:-4] + 'filled.png'
+                        crop = Image.open('crop.png')
+                        filled.paste(crop, coords)
+                        filled.save(my_name)
+                    txt_name = orig_url[-19:-17] + '-' + orig_url[-12:-4]+'.txt'
+                    with open(txt_name,'a') as f:
+                        f.write('\n' + str(pdfs+1) + ' - ' + url[-12:-4])
+                    pdfs+=1
+                    
+                os.remove('crop.png')
+                
+                
+                
+            # except:
+            #     print('didnt work')
+            #     pass
 
         #increments the url by 1
         my_num=int(url[-11:-4])
@@ -116,4 +171,3 @@ def scrape(url):
 
 
 scrape(url)
-
